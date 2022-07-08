@@ -1,0 +1,15 @@
+**/__pycache__
+
+\\
+
+config.json
+
+out.json
+
+prev_out.json
+
+credentials.json
+
+/speech_cache
+
+/logs/log-files/*
