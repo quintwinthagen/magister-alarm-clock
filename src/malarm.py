@@ -392,8 +392,3 @@ class Malarm():
             self.driver.quit()
         except AttributeError:
             pass
-
-
-if __name__ == "__main__":
-    DEBUG_ARG = len(sys.argv) > 1 and sys.argv[1] == "-d"
-    m = Malarm((1800, 2400, 1200), "../audio-files/alarm_sound.mp3", 10, DEBUG=DEBUG_ARG)

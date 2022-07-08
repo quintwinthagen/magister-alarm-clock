@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import json
+import sys
 import datetime as dt
 
 from os import path
@@ -21,9 +22,9 @@ class JsonHelper:
                     # self.log.debug("Created file: %s", f)
                     print(f"Created file: {f}")
                     if f == "credentials.json":
-                        json.dump({"username": "", "password": ""}, fhandler, indent=4)
-                        print("Fill in magister credentials in credentials.json")
-
+                        username = input("Magister username: ") or ""
+                        password = input("Magister password: ") or ""
+                        json.dump({"username": username,  "password": password), fhandler, indent=4)
                     if f in ("out.json", "prev_out.json"):
                         fhandler.write("{}")
 
