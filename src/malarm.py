@@ -39,9 +39,6 @@ class Malarm():
     def __init__(self, times: tuple, audio_path: str, pin: int, DEBUG=False) -> None:
         """Initialize the instance variables and print a startup message"""
 
-        # print(fig.figlet_format("Malarm", font="slant"))
-        # print("A project by Quint Winthagen\n")
-
         self.DEBUG = DEBUG
         self.RUNNING = False
         self.pin = pin
@@ -75,14 +72,11 @@ class Malarm():
 
         log_path = path.normpath(path.join(path.dirname(__file__), "../logs"))
         if not path.exists(log_path):
-            print("Log dir did not exist, creating one...")
-            print(log_path)
             mkdir(log_path)
 
         log_file = path.join(log_path, "malarm.log")
         if not path.exists(log_file):
             with open(log_file, "w"): pass
-            print("Created malarm.log file")
 
         m_file_handler = logging.FileHandler(log_file)
         m_file_handler.setFormatter(m_main_formatter)
@@ -96,21 +90,19 @@ class Malarm():
         """Uses the selenium browser simulator to log in to Magister
            and returns the html source of the page with all the relevant data"""
 
+        self.log.info("Fetching magister html")
+
+        creds = self.json_helper.get_credentials()
+        if not creds["username"] or not creds["password"]:
+            self.log.critical("Credentials not complete")
+            return ""
+
         try:
-            self.log.info("Fetching magister html")
-
-            creds = self.json_helper.get_credentials()
-            if not creds["username"]:
-                self.log.critical("Username was not found")
-                return ""
-            if not creds["password"]:
-                self.log.critical("Password was not found")
-                return ""
-
             m_opt = webdriver.ChromeOptions()
             m_opt.add_argument("--window-position=0,0")
             m_opt.add_argument("--window-size=1080,1080")
             self.driver = webdriver.Chrome(options=m_opt)
+
 
             self.log.info("Starting webscrape")
             self.driver.get("https://esprit.magister.net")
@@ -272,11 +264,11 @@ class Malarm():
             self.status = MalarmStatus.Scraping
             try:
                 html = self.get_html()
-                if not html:
-                    raise Exception("Cannot process html if fetch failed")
-
-                self.process_html(html)
-                self.json_helper.last_update_data(dt.datetime.now())
+                if html:
+                    self.process_html(html)
+                    self.json_helper.last_update_data(dt.datetime.now())
+                else:
+                    self.log.critical("Cannot process html if fetch failed")
             except:
                 self.log.exception("Exception inside refresh thread")
             finally:
@@ -308,7 +300,6 @@ class Malarm():
 
                 for upcoming_school_alarm in self.upcoming_school_alarms:
                     if upcoming_school_alarm.date() == alarm_dt.date():
-                        # print("This date already has a date set, changing...")
                         self.upcoming_school_alarms.remove(upcoming_school_alarm)
 
                 self.upcoming_school_alarms.append(alarm_dt)

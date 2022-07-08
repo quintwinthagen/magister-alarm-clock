@@ -57,9 +57,7 @@ class AlarmDispatcher:
     def __init__(self, audio_path: str, pin: int) -> None:
         self.audio_path = path.normpath(path.join(path.dirname(__file__), audio_path))
         self.pin = pin
-
         self.alarm_events = []
-
         mixer.init()
 
         if RPI:
@@ -80,14 +78,11 @@ class AlarmDispatcher:
 
         log_path = path.normpath(path.join(path.dirname(__file__), "../logs"))
         if not path.exists(log_path):
-            print("Log dir did not exist, creating one...")
-            print(log_path)
             mkdir(log_path)
 
         log_file = path.join(log_path, "malarm.log")
         if not path.exists(log_file):
             with open(log_file, "w", encoding="utf-8"): pass
-            print("Created malarm.log file")
 
         m_file_handler = logging.FileHandler(log_file)
         m_file_handler.setFormatter(m_main_formatter)
