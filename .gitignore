@@ -12,4 +12,4 @@ credentials.json
 
 /speech_cache
 
-/logs/log-files/*
+/logs

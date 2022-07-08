@@ -100,6 +100,12 @@ class Malarm():
             self.log.info("Fetching magister html")
 
             creds = self.json_helper.get_credentials()
+            if not creds["username"]:
+                self.log.critical("Username was not found")
+                return ""
+            if not creds["password"]:
+                self.log.critical("Password was not found")
+                return ""
 
             m_opt = webdriver.ChromeOptions()
             m_opt.add_argument("--window-position=0,0")

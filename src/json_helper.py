@@ -21,7 +21,7 @@ class JsonHelper:
                     # self.log.debug("Created file: %s", f)
                     print(f"Created file: {f}")
                     if f == "credentials.json":
-                        json.dump({"username": "", "password": ""}, fhandler, indent=4, sort_keys=True)
+                        json.dump({"username": "", "password": ""}, fhandler, indent=4)
                         print("Fill in magister credentials in credentials.json")
 
                     if f in ("out.json", "prev_out.json"):
@@ -29,9 +29,9 @@ class JsonHelper:
 
                     if f == "config.json":
                         json.dump({"last_update": dt.datetime(year=1, month=1, day=1).isoformat()}, fhandler)
-            else:
-                # print(f"{f} already exists")
-                pass
+        if not self.get_credentials()["username"] or not self.get_credentials()["password"]:
+            print("--- Credentials not complete ---")
+
 
     def get_out(self) -> dict:
         with open(self.get_absolute_path("out.json"), "r", encoding="utf-8") as out:
