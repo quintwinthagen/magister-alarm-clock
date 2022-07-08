@@ -24,7 +24,7 @@ class JsonHelper:
                     if f == "credentials.json":
                         username = input("Magister username: ") or ""
                         password = input("Magister password: ") or ""
-                        json.dump({"username": username,  "password": password), fhandler, indent=4)
+                        json.dump({"username": username,  "password": password}, fhandler, indent=4)
                     if f in ("out.json", "prev_out.json"):
                         fhandler.write("{}")
 
