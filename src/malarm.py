@@ -36,10 +36,9 @@ class MalarmStatus(Enum):
 class Malarm():
     """Main Magister alarm class"""
 
-    def __init__(self, times: tuple, audio_path: str, pin: int, DEBUG=False) -> None:
+    def __init__(self, times: tuple, audio_path: str, pin: int) -> None:
         """Initialize the instance variables and print a startup message"""
 
-        self.DEBUG = DEBUG
         self.RUNNING = False
         self.pin = pin
         self.audio_path = audio_path
@@ -59,7 +58,6 @@ class Malarm():
         """Initialize logger variables"""
 
         self.log = logging.getLogger("Malarm")
-        self.log.setLevel(logging.DEBUG if self.DEBUG else logging.INFO)
         self.log.setLevel(logging.DEBUG)
 
         selenium.webdriver.remote.remote_connection.LOGGER.setLevel(logging.CRITICAL)

@@ -90,6 +90,5 @@ def setup_alarms():
 
 if __name__ == "__main__":
     global m
-    m = Malarm((1800, 2400, 1200), "../audio-files/alarm_sound.mp3", 10, DEBUG=False)
-    # m.run()
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    m = Malarm((1800, 2400, 1200), "../audio-files/alarm_sound.mp3", 10)
+    app.run(host="0.0.0.0", port=5000, debug=False)

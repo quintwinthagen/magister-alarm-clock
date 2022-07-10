@@ -64,12 +64,3 @@ class JsonHelper:
     def update_previous(self) -> None:
         with open(self.get_absolute_path("prev_out.json"), "w+", encoding="utf-8") as prev_out:
             json.dump(self.get_out(), prev_out, indent=4)
-
-
-if __name__ == "__main__":
-    jh = JsonHelper()
-    jh.initialize()
-#     print(jh.get_out())
-#     jh.write_out({"test": "mest"})
-#     jh.update_previous()
-#     jh.last_update_data(dt.datetime.now())

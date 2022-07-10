@@ -77,12 +77,7 @@ class AlarmDispatcher:
         m_stream_handler.setFormatter(m_main_formatter)
 
         log_path = path.normpath(path.join(path.dirname(__file__), "../logs"))
-        if not path.exists(log_path):
-            mkdir(log_path)
-
         log_file = path.join(log_path, "malarm.log")
-        if not path.exists(log_file):
-            with open(log_file, "w", encoding="utf-8"): pass
 
         m_file_handler = logging.FileHandler(log_file)
         m_file_handler.setFormatter(m_main_formatter)
