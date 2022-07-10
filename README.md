@@ -3,9 +3,12 @@ A python projects that turns your device into an alarm clock. It scrapes schedul
 
 ## Getting started
 1. Install the required python libraries with `python3 -m pip install -r requirements.txt`
-2. Run `app.py` in the `src` directory. If you are running this on a Raspberry Pi, use the `--rpi` flag and connect a push button to pin 10. This will then serve as an alarm stopping button.
+2. Run `app.py` in the `src` directory. If you are running this on a Raspberry Pi, use the `--rpi` flag and connect a push button to pin 10. This will then serve as an alarm stopping button. Without the flag set, type `stop` to stop a playing alarm.
 3. Enter your Magister credentials when prompted
 4. Enjoy. You can acces the web interface on your local machine at `http://127.0.0.1:5000` or from any other device on your local network with the IP adress of the host device, at port 5000
+
+### Notes
+This is a personal project and is not meant for anyone to start using, and will thus not receive updates or bugfixes. You can use the code but know that it is not very stable. Besides, the web scraping code is designed to work with a specific schools login page (i.e. Microsoft).
 
 ---
 Web interface on startup (without scrape data)
