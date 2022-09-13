@@ -1,5 +1,5 @@
 # magister-alarm-clock
-A python projects that turns your device into an alarm clock. It scrapes schedule data from Magister (Esprit only) and wakes you up accordingly. A Flask web interface lets you set and remove alarms remotely. Initially designed for the Raspberry Pi.
+A python project that turns your device into an alarm clock. It scrapes schedule data from Magister (Esprit only) and wakes you up accordingly. A Flask web interface lets you set and remove alarms remotely. Initially designed for the Raspberry Pi.
 
 ## Getting started
 1. Install the required python libraries with `python3 -m pip install -r requirements.txt`
