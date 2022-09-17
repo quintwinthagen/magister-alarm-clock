@@ -2,8 +2,7 @@ import time
 import datetime as dt
 import json
 from io import BytesIO
-from os import path
-from os import system
+from os import path, system
 from contextlib import redirect_stdout
 
 from gtts import gTTS

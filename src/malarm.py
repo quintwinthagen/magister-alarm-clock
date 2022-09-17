@@ -5,7 +5,6 @@
 # Standard imports
 import time
 import logging
-import sys
 import threading
 import datetime as dt
 
@@ -24,7 +23,8 @@ from bs4 import BeautifulSoup
 
 # Custom imports
 # from speech import SpeechManager
-from alarm_dispatcher import AlarmDispatcher
+from event_dispatcher import EventDispatcher
+from function import alarm_function
 from json_helper import JsonHelper
 
 
@@ -33,7 +33,7 @@ class MalarmStatus(Enum):
     Scraping = "Scraping Magister"
 
 
-class Malarm():
+class Malarm:
     """Main Magister alarm class"""
 
     def __init__(self, times: tuple, audio_path: str, pin: int) -> None:
@@ -49,7 +49,6 @@ class Malarm():
         self.__init_logger()
 
         # self.speech_manager = SpeechManager(cache_folder="speech_cache")
-        self.alarm_dispatcher = AlarmDispatcher(self.audio_path, self.pin)
         self.json_helper = JsonHelper(json_dir="../")
         self.json_helper.initialize()
         self.upcoming_school_alarms = []
@@ -83,7 +82,6 @@ class Malarm():
         self.log.addHandler(m_file_handler)
         self.log.debug("Succesfully initialized logger")
 
-
     def get_html(self) -> str:
         """Uses the selenium browser simulator to log in to Magister
            and returns the html source of the page with all the relevant data"""
@@ -101,7 +99,6 @@ class Malarm():
             m_opt.add_argument("--window-size=1080,1080")
             self.driver = webdriver.Chrome(options=m_opt)
 
-
             self.log.info("Starting webscrape")
             self.driver.get("https://esprit.magister.net")
             self.await_page_load()
@@ -116,7 +113,7 @@ class Malarm():
             username_submit.click()
             self.await_page_load()
 
-            if not "microsoft" in self.driver.current_url:
+            if "microsoft" not in self.driver.current_url:
                 self.log.critical("Failed to login (microsoft not in url)")
                 return ""
 
@@ -134,7 +131,7 @@ class Malarm():
 
             self.driver.get("https://esprit.magister.net/magister/#/agenda")
 
-            if not "agenda" in self.driver.current_url:
+            if "agenda" not in self.driver.current_url:
                 self.log.critical("Failed to login (agenda not in url)")
                 return ""
 
@@ -193,7 +190,7 @@ class Malarm():
             else:
                 verkort_rooster = ("verkort rooster" in entry.text.lower())
                 min_rooster = ("40 minuten rooster" in entry.text.lower())
-                no_min_rooster = (not "geen 40 minuten rooster" in entry.text.lower())
+                no_min_rooster = ("geen 40 minuten rooster" not in entry.text.lower())
 
                 if (verkort_rooster or min_rooster) and no_min_rooster:
                     data[day_counter]["sched_exception"] = 1
@@ -205,7 +202,6 @@ class Malarm():
 
         self.log.info("Finished processing")
         self.log.debug("Processing html took: %d milliseconds", time.time() * 1000 - time_at_start)
-
 
     def find_timeslot(self, amount: int, short=False) -> str:
         """Converts the schedule index to a timeslot string"""
@@ -236,7 +232,6 @@ class Malarm():
 
         return times_short[amount - 1] if short else times[amount - 1]
 
-
     def await_page_load(self) -> None:
         """A blocking function that returns once the page is loaded"""
 
@@ -245,15 +240,6 @@ class Malarm():
 
         time.sleep(2)
         self.log.debug("Page has loaded")
-
-
-    def dispatch_alarm(self, _time: dt.datetime, nameprefix="alarm"):
-        return self.alarm_dispatcher.dispatch(_time, nameprefix)
-
-
-    def get_dispatcher(self) -> AlarmDispatcher:  # TODO(make dispatcher property and use @property decorator)
-        return self.alarm_dispatcher
-
 
     def refresh_magister_data(self):
 
@@ -275,12 +261,10 @@ class Malarm():
         refresh_thread = threading.Thread(target=thread_func, name="refresh thread", daemon=True)
         refresh_thread.start()
 
-
     def get_status(self) -> MalarmStatus:
         return self.status
 
-
-    def setup_alarms(self):
+    def setup_alarms(self, dispatcher: EventDispatcher):
         self.log.info("Setting up alarms...")
         return_list = []
         data = self.json_helper.get_out()
@@ -301,12 +285,10 @@ class Malarm():
                         self.upcoming_school_alarms.remove(upcoming_school_alarm)
 
                 self.upcoming_school_alarms.append(alarm_dt)
-
-                msg = self.dispatch_alarm(alarm_dt, nameprefix="school")
+                msg = dispatcher.dispatch(alarm_dt, alarm_function)
                 if msg:
                     return_list.append(msg)
         return return_list
-
 
     @staticmethod
     def find_dropped(hours: dict) -> list:
@@ -317,11 +299,10 @@ class Malarm():
         last_hour = hours[len(hours) - 1]["number"]
         present = [hour["number"] for hour in hours]
         for i in range(first_hour, last_hour + 1):
-            if not i in present:
+            if i not in present:
                 dropped.append(i)
 
         return dropped
-
 
     @staticmethod
     def get_speech_str(today: dict, day_start: dt.datetime) -> str:
