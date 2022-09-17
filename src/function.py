@@ -1,5 +1,17 @@
 import time
+import logging
+import sys
 
+from contextlib import redirect_stdout
+
+with redirect_stdout(None):
+    from pygame import mixer
+
+RPI = False
+if "--rpi" in sys.argv:
+    from RPi import GPIO
+
+    RPI = True
 
 class EventFunction:
     def __init__(self, fn, type: str):
@@ -11,9 +23,25 @@ class EventFunction:
         self.fn()
 
 
-def play_alarm():
-    print('BEEEEEEEP BEEEEEEEEP')
+def play_alarm() -> None:
+    """Play alarm"""
 
+    print("Playing alarm...")
+    mixer.init()
+    mixer.music.load("../audio-files/alarm_sound.mp3")
+
+    if RPI:
+        mixer.music.play(-1)
+        GPIO.wait_for_edge(10, GPIO.FALLING)
+        mixer.music.stop()
+    else:
+        mixer.music.play()
+        print("Type 'stop' to cut the alarm")
+        while input() != "stop":
+            pass
+        mixer.music.stop()
+
+    print("Played alarm")
 
 def lights_on():
     print("Lights have been turned on")
