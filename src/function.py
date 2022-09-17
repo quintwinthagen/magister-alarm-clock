@@ -33,6 +33,8 @@ def play_alarm() -> None:
     mixer.music.load(path.normpath(path.join(path.dirname(__file__), "../audio-files/alarm_sound.mp3")))
 
     if RPI:
+        GPIO.setmode(GPIO.BOARD)
+        GPIO.setup(10, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
         mixer.music.play(-1)
         GPIO.wait_for_edge(10, GPIO.FALLING)
         mixer.music.stop()
