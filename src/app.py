@@ -11,7 +11,7 @@ from event_dispatcher import EventDispatcher
 from json_helper import JsonHelper
 from function import alarm_function, available_functions
     
-app = Flask(__name__, template_folder="../templates")
+app = Flask(__name__, template_folder="../templates", static_folder="../static")
 app.secret_key = "".join([random.choice(string.ascii_letters + string.digits) for _ in range(20)])
 json_helper = JsonHelper()
 
@@ -87,6 +87,11 @@ def setup_alarms():
         else:
             flash(msgs)
     return redirect(url_for("index"))
+
+
+@app.route("/out_json", methods=["GET"])
+def out_json():
+    return {"out_json" : json_helper.get_out()}
 
 
 if __name__ == "__main__":
