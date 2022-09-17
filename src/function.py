@@ -2,6 +2,8 @@ import time
 import logging
 import sys
 
+from os import path
+
 from contextlib import redirect_stdout
 
 with redirect_stdout(None):
@@ -28,7 +30,7 @@ def play_alarm() -> None:
 
     print("Playing alarm...")
     mixer.init()
-    mixer.music.load("../audio-files/alarm_sound.mp3")
+    mixer.music.load(path.normpath(path.join(path.dirname(__file__), "../audio-files/alarm_sound.mp3")))
 
     if RPI:
         mixer.music.play(-1)
