@@ -2,8 +2,10 @@
 
 import string
 import random
+import logging
 import datetime as dt
 
+from os import path
 from functools import cmp_to_key
 from flask import Flask, render_template, request, redirect, url_for, flash
 from malarm import Malarm
@@ -14,7 +16,8 @@ from function import alarm_function, available_functions
 app = Flask(__name__, template_folder="../templates", static_folder="../static")
 app.secret_key = "".join([random.choice(string.ascii_letters + string.digits) for _ in range(20)])
 json_helper = JsonHelper()
-
+# app_file_handler = logging.FileHandler(path.normpath(path.join(path.dirname(__file__), "../logs/malarm.log")))
+# app.logger.addHandler(app_file_handler)
 
 @app.route("/", methods=["GET"])
 def index():

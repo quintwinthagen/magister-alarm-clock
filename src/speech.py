@@ -2,7 +2,7 @@ import time
 import datetime as dt
 import json
 from io import BytesIO
-from os import path, system
+from os import path, system, mkdir
 from contextlib import redirect_stdout
 
 from gtts import gTTS
@@ -14,19 +14,18 @@ with redirect_stdout(None):
 
 class SpeechManager:
 
-    def __init__(self, cache_folder="speech_cache"):
+    def __init__(self, cache_folder="../speech_cache"):
         mixer.init()
-
-        if cache_folder.endswith("/"):
-            self.path = cache_folder
-        else:
-            self.path = cache_folder + "/"
-
-        if not path.exists(self.path + "regular.json"):
-            system(f"mkdir {self.path} && touch {self.path}regular.json")
-            with open(self.path+"regular.json", "w", encoding="utf-8") as reg_json:
+        self.folder_path = path.normpath(path.join(path.dirname(__file__), cache_folder))
+        self.json_path = path.join(self.folder_path, 'regular.json')
+        # print("folder_path: ", self.folder_path, "\njson_path: ", self.json_path)
+        try:
+            mkdir(self.folder_path)
+            with open(self.json_path, "w", encoding="utf-8") as reg_json:
                 reg_json.write("{\n}")
-
+        except FileExistsError:
+            pass
+            # print("regulars exists")
 
     def play_speech(self, sound_file):
         mixer.music.load(sound_file)
@@ -37,10 +36,10 @@ class SpeechManager:
 
     def add_speech(self, name:str, text:str, language="nl"):
         speech = gTTS(text=text, lang=language, slow=False)
-        speech.save(self.path + name + ".mp3")
+        speech.save(path.join(self.folder_path, name + ".mp3"))
         regulars = self.get_cache()
         regulars[text] = name + ".mp3"
-        with open(self.path + "regular.json", "w+", encoding="utf-8") as reg_json:
+        with open(self.json_path, "w+", encoding="utf-8") as reg_json:
             json.dump(regulars, reg_json, indent=4, sort_keys=True, ensure_ascii=False)
 
 
@@ -66,17 +65,16 @@ class SpeechManager:
     def play_reg(self, text:str, language="nl"):
         name = str(time.time())[11:]
         regulars = self.get_cache()
-        if not text in regulars:
+        if  text not in regulars:
             self.add_speech(name, text, language=language)
-            self.play_speech(self.path  + name + ".mp3")
+            self.play_speech(path.join(self.folder_path,  name + ".mp3"))
         else:
-            self.play_speech(self.path + regulars[text])
+            self.play_speech(path.join(self.folder_path, regulars[text]))
 
-    
+
     def get_cache(self):
-        with open(self.path + "regular.json", "r", encoding="utf-8") as reg_json:
+        with open(self.json_path, "r", encoding="utf-8") as reg_json:
             regular = json.load(reg_json)
-
         return regular
 
 

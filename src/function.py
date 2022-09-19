@@ -3,8 +3,9 @@ import logging
 import sys
 
 from os import path
-
 from contextlib import redirect_stdout
+
+from speech import SpeechManager
 
 with redirect_stdout(None):
     from pygame import mixer
@@ -47,17 +48,11 @@ def play_alarm() -> None:
 
     print("Played alarm")
 
-def lights_on():
-    print("Lights have been turned on")
-
-
-def lights_off():
-    print("lights have been turned off")
-
+def play_good_morning() -> None:
+    sm = SpeechManager()
+    sm.play_good_morning()
 
 alarm_function = EventFunction(play_alarm, type='Alarm')
-lights_on_function = EventFunction(lights_on, type="Lights On")
-lights_off_function = EventFunction(lights_off, type="Lights Off")
+good_morning_function = EventFunction(play_good_morning, type="good_morning")
 available_functions = {"Alarm": alarm_function,
-                       "Lights on": lights_on_function,
-                       "Lights off": lights_off_function}
+                       "Good morning": good_morning_function}
