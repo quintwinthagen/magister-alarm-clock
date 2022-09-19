@@ -16,6 +16,8 @@ if "--rpi" in sys.argv:
 
     RPI = True
 
+sm = SpeechManager()
+
 class EventFunction:
     def __init__(self, fn, type: str):
         self.fn = fn
@@ -29,7 +31,6 @@ class EventFunction:
 def play_alarm() -> None:
     """Play alarm"""
 
-    print("Playing alarm...")
     mixer.init()
     mixer.music.load(path.normpath(path.join(path.dirname(__file__), "../audio-files/alarm_sound.mp3")))
 
@@ -46,13 +47,12 @@ def play_alarm() -> None:
             pass
         mixer.music.stop()
 
-    print("Played alarm")
-
-def play_good_morning() -> None:
-    sm = SpeechManager()
-    sm.play_good_morning()
+    time.sleep(2)
+    sm.play_good_morning() #Play good morning when alarm has just stopped
+    time.sleep(2)
+    sm.play_bye()
 
 alarm_function = EventFunction(play_alarm, type='Alarm')
-good_morning_function = EventFunction(play_good_morning, type="good_morning")
+good_morning_function = EventFunction(sm.play_good_morning, type="Good morning")
 available_functions = {"Alarm": alarm_function,
                        "Good morning": good_morning_function}

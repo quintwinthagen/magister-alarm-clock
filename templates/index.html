@@ -39,7 +39,7 @@
 				{% endif %}
 				{% endwith %}
 				<div class="row mt-2">
-					<form action="/set_alarm" method="post"> 
+					<form action="/schedule_event" method="post"> 
 						<div class="row col-4 ps-2 mb-2">
 							<select class="form-select col" name="function" aria-label="Default select example">
 								{% for type in types %}
@@ -53,14 +53,14 @@
 								document.getElementById("datetime").setAttribute("value", now.toISOString().slice(0,16));
 							</script>
 						</div>
-						<button class="col-4 btn btn-success" type="submit">Set alarm</button>
+						<button class="col-4 btn btn-success" type="submit">Schedule event</button>
 					</form>
 				</div>
 
 				<div class="row mt-2">
-					<form action="/cancel_alarm" method="post">
-						<input class="col-2" type="text" name="name" placeholder="name of alarm">
-						<button class="col-2 btn btn-danger ms-2" type="submit">Cancel alarm</button>
+					<form action="/cancel_event" method="post">
+						<input class="col-2" type="text" name="name" placeholder="name of event">
+						<button class="col-2 btn btn-danger ms-2" type="submit">Cancel event</button>
 					</form>
 				</div>
 
@@ -68,14 +68,15 @@
 					<form action="/status" method="post">
 						<button class="col-1 btn btn-primary" formaction="/status">Status</button>
 						<button class="col-1 btn btn-primary" formaction="/magister_scrape">Scrape</button>
-						<button class="col-1 btn btn-primary" formaction="/setup_alarms">Setup</button> <button class="col-1 btn btn-warning" formaction="/cancel_all">Cancel all</button>
+						<button class="col-1 btn btn-primary" formaction="/setup_alarms">Setup</button>
+						<button class="col-1 btn btn-warning" formaction="/cancel_all">Cancel all</button>
 					</form>
 				</div>
 				<div class="col-4">
-					{% if current_alarms %}
-					<h3 class="border-bottom mb-4">Alarms</h3>
+					{% if current_events %}
+					<h3 class="border-bottom mb-4">Events</h3>
 					{% else %}
-					<h3>No alarms are set</h3>
+					<h3>No events are set</h3>
 					{% endif %}
 					<div class="table-responsive">
 						<table class="table table-bordered table-striped">
@@ -85,22 +86,22 @@
 								<th scope="col">Time</th>
 								<th scope="col"></th>
 							</tr>
-							{% for alarm_entry in current_alarms %}
+							{% for event_entry in current_events %}
 							<tr>
 								<td align="center">
 									<span class="badge bg-info"> {{loop.index}} </span>
 								</td>
 								<td>
-									<h5> {{alarm_entry.1}} </h5>
+									<h5> {{event_entry.1}} </h5>
 								</td>
 
 								<td>
-									<h5>{{alarm_entry.0}}</h5>
+									<h5>{{event_entry.0}}</h5>
 								</td>
 
 								<td class="table-danger" align="center">
-									<form action="/cancel_alarm" method="post" style="display: inline;">
-										<input type=hidden name="name" value="{{alarm_entry.1 }}"/>
+									<form action="/cancel_event" method="post" style="display: inline;">
+										<input type=hidden name="name" value="{{event_entry.1 }}"/>
 										<div class="btn-group">
 											<button class="btn btn-danger btn-sm float-end" type="submit">&#10005;</button>
 										</div>

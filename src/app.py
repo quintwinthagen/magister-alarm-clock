@@ -33,17 +33,17 @@ def index():
             last_update = last_update.strftime(_format)
         _status = malarm.get_status().name
 
-        return render_template("index.html", current_alarms=current_events
+        return render_template("index.html", current_events=current_events
                                , last_update=last_update
                                , status=_status
                                , types = available_functions.keys())
 
 
-@app.route("/set_alarm", methods=["POST"])
-def set_alarm():
-    alarm_due = dt.datetime.fromisoformat(request.form["datetime"])
+@app.route("/schedule_event", methods=["POST"])
+def schedule_event():
+    event_due = dt.datetime.fromisoformat(request.form["datetime"])
     event_function = request.form["function"]
-    msgs = dispatcher.dispatch(alarm_due, available_functions[event_function])
+    msgs = dispatcher.dispatch(event_due, available_functions[event_function])
     if msgs:
         if isinstance(msgs, list):
             for msg in msgs:
@@ -54,8 +54,8 @@ def set_alarm():
     return redirect(url_for("index"))
 
 
-@app.route("/cancel_alarm", methods=["POST"])
-def cancel_alarm():
+@app.route("/cancel_event", methods=["POST"])
+def cancel_event():
     msg = dispatcher.cancel_event_by_name(request.form["name"])
     if msg:
         flash(msg)
