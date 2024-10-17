@@ -44,11 +44,11 @@ class SpeechManager:
 
 
     def play_good_morning(self):
-        self.play_reg("Een hele goede morgen Kwint") #Quint is not pronounced correctly, so Kwint works better
+        self.play_reg("Good morning")
 
 
     def play_bye(self):
-        self.play_reg("Tot morgen, peace out.")
+        self.play_reg("Tot morgen")
 
 
     def play_misc(self, text:str, language="nl"):
